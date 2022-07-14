@@ -1,4 +1,6 @@
 # Backend - Trivia API
+This is a Trivia API that allows user to create, read and delete qtrivia questions. Categories are preset and new ones are not allowed in this version.
+API return json objects.
 
 ## Setting up the Backend
 
@@ -89,6 +91,136 @@ You will need to provide detailed documentation of your API endpoints including 
   "6": "Sports"
 }
 ```
+`DELETE '/api/v1.0/questions/<int:question_id>'`
+- Delete method that queries database for a question id. If id the query does not return a question due to question not found a 404 error is thrown.
+- Response includes a success, status_code, list og paginated questions and the total number of questions
+- Request Arguments: the id of question is part of the request object
+
+```json
+{
+  "questions": [
+    {
+      "answer": "Maya Angelou",
+      "category": 4,
+      "difficulty": 2,
+      "id": 5,
+      "question": "Whose autobiography is entitled 'I Know Why the Caged Bird Sings'?"
+    }
+    ],
+  "success": true,
+  "total_questions": 21
+}
+
+"GET '/api/v1.0/questions'"
+- Fetches a dictionary of categories in which the keys are the ids and the value is the corresponding string of the category
+- Fetches a dictionary of questions in which the keys are question, answer, category, difficulty and the values are Strings for all keys except difficulty which is an Integer
+- Request Arguments: None
+- Returns: An object with a single key, `categories`, that contains an object of `id: category_string` key: value pairs. The response also include current category selected, questions, status code, success code and total number of questions.
+Example below:
+
+``` json
+
+{
+  "categories": {
+    "1": "Science", 
+    "2": "Art", 
+    "3": "Geography", 
+    "4": "History", 
+    "5": "Entertainment", 
+    "6": "Sports"
+  }, 
+  "current_category": null, 
+  "questions": [
+    {
+      "answer": "Maya Angelou", 
+      "category": 4, 
+      "difficulty": 2, 
+      "id": 5, 
+      "question": "Whose autobiography is entitled 'I Know Why the Caged Bird Sings'?"
+    }
+    ], 
+  "success": true, 
+  "total_questions": 22
+}
+
+"POST '/api/v1.0/questions'"
+- method that creates a new question of a new search based on serarchTerm. 
+- Request: Object sends over question, answer, category, difficulty and searchTerm.
+- the searchTerm is used to query database. 
+- the rest of the request is used to create a new question
+- Returns: An json object with a list of questions, the total number of questions and the success code.
+NOTE: The total number of questions for search result will be the total number of questions that contains searchTerm whereas the total number of questions for new question will be all the questions.
+Example below:
+
+``` json
+searchTerm response:
+{
+  "questions": [
+    {
+      "answer": "Mercury",
+      "category": 1,
+      "difficulty": 1,
+      "id": 24,
+      "question": "What is the nearest planet to the sun?"
+    }
+  ],
+  "success": true,
+  "total_questions": 1 
+}
+new_question response:
+{
+"questions": [
+    {
+      "answer": "Maya Angelou", 
+      "category": 4, 
+      "difficulty": 2, 
+      "id": 5, 
+      "question": "Whose autobiography is entitled 'I Know Why the Caged Bird Sings'?"
+    }
+    ], 
+  "success": true, 
+  "total_questions": 22
+}
+
+"GET '/api/v1.0/questions/<int:category_id>/questions'"
+- Fetches categories and questions filtered by category
+-Response object shows success status, length of questions in category and the questions in category.
+-This list is paginated with total number of questions in particular category
+Example below:
+``` json
+{
+  "questions": [
+    {
+      "answer": "The Liver", 
+      "category": 1, 
+      "difficulty": 4, 
+      "id": 20, 
+      "question": "What is the heaviest organ in the human body?"
+    }, 
+    ], 
+  "success": true, 
+  "total_questions": 1
+}
+
+"POST '/api/v1.0/quizzes'"
+-Post method with request object that contains quiz category and a list of ids for previous question that have already been used
+- response returns success and the next question
+``` json
+request object example:
+{
+  "quiz_category":{"type":"Science","id":"1"},"previous_questions":[21]
+  }
+response object example:
+{
+  "question": {
+    "answer": "The Liver",
+    "category": 1,
+    "difficulty": 4,
+    "id": 20,
+    "question": "What is the heaviest organ in the human body?"
+  },
+  "success": true
+}
 
 ## Testing
 
